@@ -1,0 +1,25 @@
+[project]
+name = "hwo_pol"
+version = "0.1"
+description = "Polarization aberration simulation for NASA's HWO"
+readme = "README.md"
+requires-python = ">=3.8"
+
+dependencies = ["numpy","matplotlib","scipy","astropy","prysm"]
+
+classifiers = [
+	"Programming Language :: Python :: 3",
+	"Operating System :: OS Independent",
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["hwo_pol"]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "."
+]

@@ -1,3 +1,5 @@
+# Folders that contain data that should not be committed
+coating_recipes/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
