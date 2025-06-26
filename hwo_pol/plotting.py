@@ -1,3 +1,8 @@
+from poke.poke_math import np
+import matplotlib.pyplot as plt
+import ipdb
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
 def plot_jones_3x3(jones, type='polar', vmin1=None, vmax1=None, vmin2=None, vmax2=None, title=None):
     """Plotting function including the off-diagonals to debug results
     """
@@ -16,13 +21,15 @@ def plot_jones_3x3(jones, type='polar', vmin1=None, vmax1=None, vmin2=None, vmax
 
     titles = np.array(['XX', 'XY', 'XZ', 'YX', 'YY', 'YZ', 'ZX', 'ZY', 'ZZ'])
     titles = np.reshape(titles, (3, 3))
-
     jones = np.moveaxis(jones, 0, -1)
     jones_shape = int(np.sqrt(jones.shape[-1]))
     jones = np.reshape(jones, (3, 3, jones_shape, jones_shape))
 
 
     fig, axs = plt.subplots(ncols=6, nrows=3, figsize=(14, 6))
+
+    if title is not None:
+        plt.suptitle(title)
 
     for i in range(3):
         for j in range(3):
@@ -45,8 +52,6 @@ def plot_jones_3x3(jones, type='polar', vmin1=None, vmax1=None, vmin2=None, vmax
             ax.set_title(f'∠{titles[i, j]}')
             cax = div.append_axes('right', size='5%', pad=0.05)
             fig.colorbar(im, cax=cax, orientation='vertical')
-    
-    if title is not None:
-        plt.suptitle(title)
+
 
     plt.show()
