@@ -12,14 +12,17 @@ coating = "XeLiF.json"
 coating_internal = "ProtectedAg.json"
 ending = "OTA"
 
-eac1 = EAC1(num_rays, fov_1, wavelengths, coating, coating_internal, ending=ending)
-eac4 = EAC4(num_rays, fov_4, wavelengths, coating, coating_internal, ending=ending)
-eac5 = EAC5(num_rays, fov_5, wavelengths, coating, coating_internal, ending=ending)
+eac1 = EAC1(num_rays, fov_1, wavelengths, coating, coating_internal,
+            ending=ending)
+eac4 = EAC4(num_rays, fov_4, wavelengths, coating, coating_internal,
+            ending=ending)
+eac5 = EAC5(num_rays, fov_5, wavelengths, coating, coating_internal,
+            ending=ending)
 
 eacs = [eac1, eac4, eac5]
 
 for eac, num in zip(eacs, [1, 4, 5]):
-    
+
     # First trace the rays
     eac.trace_rays()
 
@@ -31,4 +34,4 @@ for eac, num in zip(eacs, [1, 4, 5]):
         plot.jones_pupil(eac.rayfronts[wavelength])
 
     # Write the rayfront to a serial file
-    write_model(eac, f"EAC{num}")
+    # write_model(eac, f"EAC{num}")
