@@ -1,10 +1,14 @@
+import matplotlib.pyplot as plt
+import ipdb
+
 import poke.plotting as plot
 from poke.poke_math import np
-import ipdb
 
 from hwo_pol.writing import read_model
 from hwo_pol.models import EAC1, EAC4, EAC5
 from hwo_pol.zernike import zernike_coefficients_jones
+
+from prysm.coordinates import cart_to_polar
 
 N_LAMS = 5 # spectral sampling
 N_RAYS = 32
@@ -54,25 +58,41 @@ for EAC, fov in zip(models, fovs):
 
         # Compute the Zernike coefficients
         for wvl in eac.wavelengths:
-            jones = eac.rayfronts[wvl].jones_pupil[-1][..., :2, :2]
+            
+            rf = eac.rayfronts[wvl]
+            jones = rf.jones_pupil[-1][..., :2, :2]
+            
+            # make a circular mask
+            x = rf.xData[0,0] / rf.pupil_radius
+            y = rf.yData[0, 0] / rf.pupil_radius
+            x = x.reshape([N_RAYS, N_RAYS])
+            y = y.reshape([N_RAYS, N_RAYS])
+
+            r, t = cart_to_polar(x, y)
+            mask = np.zeros_like(r)
+            mask[r <= 1] = 1
             jones = jones.reshape([N_RAYS, N_RAYS, 2, 2])
 
+            plot.jones_pupil(eac.rayfronts[wvl], coordinates="cartesian")
+
             # Compute the Zernike coefficients
-            coeffs = zernike_coefficients_jones(jones)
+            coeffs = zernike_coefficients_jones(jones, mask=mask)
             
             plt.figure()
-            plt.title("Imaginary Zernike Coefficients, "+r"$a + ib$") 
+            plt.title("Complex Zernike Coefficients, "+r"$a + ib$") 
+
+            print(coeffs)
             
             # plot the Zernike coefficients
-            plt.plot(coeffs[:, 0, 0].real, label=r"$a_{xx}$")
-            plt.plot(coeffs[:, 0, 1].real, label=r"$a_{xy}$")
-            plt.plot(coeffs[:, 1, 0].real, label=r"$a_{yx}$")
-            plt.plot(coeffs[:, 1, 1].real, label=r"$a_{yy}$")
+            plt.plot(coeffs[:, 0, 0].real, label=r"$a_{xx}$", linestyle="None", marker="o")
+            plt.plot(coeffs[:, 0, 1].real, label=r"$a_{xy}$", linestyle="None", marker="o")
+            plt.plot(coeffs[:, 1, 0].real, label=r"$a_{yx}$", linestyle="None", marker="o")
+            plt.plot(coeffs[:, 1, 1].real, label=r"$a_{yy}$", linestyle="None", marker="o")
 
-            plt.plot(coeffs[:, 0, 0].imag, label=r"$\phi_{xx}$")
-            plt.plot(coeffs[:, 0, 1].imag, label=r"$\phi_{xy}$")
-            plt.plot(coeffs[:, 1, 0].imag, label=r"$\phi_{yx}$")
-            plt.plot(coeffs[:, 1, 1].imag, label=r"$\phi_{yy}$")
+            plt.plot(coeffs[:, 0, 0].imag, label=r"$\phi_{xx}$", linestyle="None", marker="x")
+            plt.plot(coeffs[:, 0, 1].imag, label=r"$\phi_{xy}$", linestyle="None", marker="x")
+            plt.plot(coeffs[:, 1, 0].imag, label=r"$\phi_{yx}$", linestyle="None", marker="x")
+            plt.plot(coeffs[:, 1, 1].imag, label=r"$\phi_{yy}$", linestyle="None", marker="x")
 
             plt.legend()
             plt.show()

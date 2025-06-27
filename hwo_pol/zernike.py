@@ -5,6 +5,8 @@ from prysm.mathops import np
 from prysm.coordinates import make_xy_grid, cart_to_polar
 from prysm.polynomials import noll_to_nm, zernike_nm_sequence, lstsq
 
+import ipdb
+
 def zernike_coefficients_jones(jones_pupil, nmodes=37, mask=None):
     """Generate Zernike coefficients from a Jones pupil
 
@@ -27,7 +29,7 @@ def zernike_coefficients_jones(jones_pupil, nmodes=37, mask=None):
     assert jones_pupil.shape[-2:] == (2, 2), "Input contain a 2x2 Jones matrix"
 
     # construct a basis
-    x, y = make_xy_grid(jones_pupil.shape[:-2])
+    x, y = make_xy_grid(jones_pupil.shape[:-2], diameter=2)
     r, theta = cart_to_polar(x, y)
 
     # Init zernike indices
@@ -35,7 +37,6 @@ def zernike_coefficients_jones(jones_pupil, nmodes=37, mask=None):
 
     # Generate zernike basis
     basis = list(zernike_nm_sequence(nms, r, theta))
-
     coefficients = np.zeros([nmodes, 2, 2], dtype=np.complex128)
 
     # lstsq to get coefficients, loop over Jones indices
