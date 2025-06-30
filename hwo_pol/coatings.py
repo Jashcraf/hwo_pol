@@ -17,7 +17,7 @@ from poke.materials import create_index_model # poke baked in models
 from poke.thinfilms import compute_thin_films_broadcasted
 
 # NOTE this returns the project directory, not the coating folder
-PROJECT_PATH = Path(__file__).parent.parent 
+PROJECT_PATH = Path(__file__).parent.parent
 COATINGS_PATH = PROJECT_PATH / "coating_recipes"
 n_BK7 =  1.4801 # Approximation for ULE, though it really shouldn't matter
 
@@ -35,7 +35,7 @@ supported_recipes = ['XeLiF', 'XeMgF2', 'EnhancedAg', 'ProtectedAg']
 def make_index_model(coating):
     """Generate a refractive index model interpolated from real data. Relies
     on the coating formulae being available, which needs to be populated before
-    installation. 
+    installation.
 
     Parameters
     ----------
@@ -50,14 +50,14 @@ def make_index_model(coating):
 
     # First check that there are files in the coating_recipes folder
     assert COATINGS_PATH.exists(), f"Coatings folder {COATINGS_PATH} not found"
-    assert coating in supported_coatings, f"Coating {coating} not supported" 
+    assert coating in supported_coatings, f"Coating {coating} not supported"
 
     # Skips first two rows because it returns a nan. Suspect this has to do
-    # with the csv file saving via excel. 
+    # with the csv file saving via excel.
     if coating in ['MgF2', 'Al2O3', 'Cr', 'F3', 'SiO2']:
         coating_data = np.genfromtxt(COATINGS_PATH / f'{coating}.csv',
                                      delimiter=',', skip_header=2)
-    else:    
+    else:
         coating_data = np.genfromtxt(COATINGS_PATH / f'{coating}.csv',
                                      delimiter=',')
 
@@ -108,7 +108,7 @@ def load_coating_data(name, wavelengths):
     assert name.stem in supported_recipes, f"Coating {name} not supported"
     assert name.suffix == ".json", f"Coating extension {name.suffix} not supported"
 
-    with open(name, "r") as f:
+    with open(COATINGS_PATH / name, "r") as f:
         recipe = json.load(f)
 
     coating_stack = []
@@ -157,7 +157,7 @@ def make_enhanced_silver(wvl):
         (coating_models[4](wvl), thicknesses[6])
     ]
     pag.reverse()
-    
+
     # just appending a 1.5 index for substrate, this should have dispersion but it wont matter given the thickness of the reflector
     pag.append(n_BK7)
 
