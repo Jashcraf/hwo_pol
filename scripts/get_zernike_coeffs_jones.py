@@ -12,7 +12,7 @@ from prysm.coordinates import cart_to_polar
 
 N_LAMS = 5 # spectral sampling
 N_RAYS = 32
-ending = "OTA" # OTA or TCA
+ending = "TCA" # OTA or TCA
 
 # Set up EAC models
 models = [EAC1, EAC4, EAC5]
@@ -21,7 +21,7 @@ models = [EAC1, EAC4, EAC5]
 coating_ota  = "XeLiF.json"
 
 coatings_internal = [
-    "ProtectedAg.json",
+    "EnhancedAg.json",
     "ProtectedAg.json",
     "ProtectedAg.json",
     "ProtectedAg.json",
@@ -29,7 +29,7 @@ coatings_internal = [
 ]
 
 # Set up spectral data
-center_wavelengths = [250, 550, 760, 950, 1500]
+center_wavelengths = [350, 550, 760, 950, 1500]
 bandwidths = [0.1, 0.2, 0.2, 0.2, 0.2]
 
 # Set up Fields of View
@@ -76,3 +76,23 @@ for EAC, fov in zip(models, fovs):
             plot.jones_pupil(eac.rayfronts[wvl], coordinates="cartesian")
 
             # Compute the Zernike coefficients
+            coeffs = zernike_coefficients_jones(jones, mask=mask, nmodes=12)
+            
+            plt.figure()
+            plt.title("Complex Zernike Coefficients, "+r"$a + ib$") 
+
+            print(coeffs)
+            
+            # plot the Zernike coefficients
+            plt.plot(coeffs[:, 0, 0].real, label=r"$a_{xx}$", linestyle="None", marker="o")
+            plt.plot(coeffs[:, 0, 1].real, label=r"$a_{xy}$", linestyle="None", marker="o")
+            plt.plot(coeffs[:, 1, 0].real, label=r"$a_{yx}$", linestyle="None", marker="o")
+            plt.plot(coeffs[:, 1, 1].real, label=r"$a_{yy}$", linestyle="None", marker="o")
+
+            plt.plot(coeffs[:, 0, 0].imag, label=r"$\phi_{xx}$", linestyle="None", marker="x")
+            plt.plot(coeffs[:, 0, 1].imag, label=r"$\phi_{xy}$", linestyle="None", marker="x")
+            plt.plot(coeffs[:, 1, 0].imag, label=r"$\phi_{yx}$", linestyle="None", marker="x")
+            plt.plot(coeffs[:, 1, 1].imag, label=r"$\phi_{yy}$", linestyle="None", marker="x")
+
+            plt.legend()
+            plt.show()
