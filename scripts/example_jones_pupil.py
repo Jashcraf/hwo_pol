@@ -11,12 +11,12 @@ center_wavelengths = [250, 550, 760, 950, 1500]
 bandwidths = [0.1, 0.2, 0.2, 0.2, 0.2]
 wavelengths = []
 
-for wvl, bw in zip(center_wavelengths, bandwidths):
-    short_wvl = wvl * (1 - bw/2)
-    long_wvl = wvl * (1 + bw/2)
-    bandpass = np.linspace(short_wvl, long_wvl, 32)
-    for lam in bandpass:
-        wavelengths.append(bandpass)
+# for wvl, bw in zip(center_wavelengths, bandwidths):
+#     short_wvl = wvl * (1 - bw/2)
+#     long_wvl = wvl * (1 + bw/2)
+#     bandpass = np.linspace(short_wvl, long_wvl, 32)
+#     for lam in bandpass:
+#         wavelengths.append(bandpass)
 
 coating = "XeLiF.json"
 coating_internal = "ProtectedAg.json"

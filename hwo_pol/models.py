@@ -71,6 +71,8 @@ class EAC:
         
         self.surflist_by_wavelength = {}
 
+        ipdb.set_trace()
+
         for wavelength in self.wavelengths:
             coating_ota = load_coating_data(COATINGS_PATH / self.coating, wavelength)
             coating_internal = load_coating_data(COATINGS_PATH / self.coating_internal,

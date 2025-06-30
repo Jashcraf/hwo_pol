@@ -54,9 +54,12 @@ def make_index_model(coating):
 
     # Skips first two rows because it returns a nan. Suspect this has to do
     # with the csv file saving via excel. 
-    if coating in ['MgF2', 'Al2O3', 'Cr', 'F3', 'SiO2']:
+    # NOTE: The first values in each of these files are ERRONEOUS, I put them
+    # there so that the data could be skipped by this line and we get out of
+    # the NaN value.
+    if coating in ['MgF2', "F3", "Al2O3", 'SiO2', "Cr"]:
         coating_data = np.genfromtxt(COATINGS_PATH / f'{coating}.csv',
-                                     delimiter=',', skip_header=2)
+                                     delimiter=',', skip_header=1)
     else:    
         coating_data = np.genfromtxt(COATINGS_PATH / f'{coating}.csv',
                                      delimiter=',')
@@ -67,6 +70,7 @@ def make_index_model(coating):
 
     n_interp = interp1d(wavelengths, n, kind='cubic')
     k_interp = interp1d(wavelengths, k, kind='cubic')
+
 
     index_model = lambda x: n_interp(x) + 1j*k_interp(x)
 
@@ -124,41 +128,3 @@ def load_coating_data(name, wavelengths):
 
     return coating_stack
 
-
-def make_enhanced_silver(wvl):
-    """Helper function to generate the UV enhanced silver recipe
-
-    Parameters
-    ----------
-    wvl : float
-        wavelength in nanometers
-
-    Returns
-    -------
-    list
-        list of tuples of refractive index and thickness,
-        compatible with the format Poke likes coatings in
-    """
-    warnings.warn("This function is deprecated, use load_coating_data instead")
-
-    coating_models = []
-    for coating in supported_coatings[5:]:
-        coating_models.append(make_index_model(coating))
-
-    # way it is written in excell sheet (backwards)
-    thicknesses = [20, 150, 49.1, 33, 53.8, 27.5, 97]
-    pag = [
-        (coating_models[0](wvl), thicknesses[0]),
-        (coating_models[1](wvl), thicknesses[1]),
-        (coating_models[2](wvl), thicknesses[2]),
-        (coating_models[3](wvl), thicknesses[3]),
-        (coating_models[2](wvl), thicknesses[4]),
-        (coating_models[3](wvl), thicknesses[5]),
-        (coating_models[4](wvl), thicknesses[6])
-    ]
-    pag.reverse()
-    
-    # just appending a 1.5 index for substrate, this should have dispersion but it wont matter given the thickness of the reflector
-    pag.append(n_BK7)
-
-    return pag
