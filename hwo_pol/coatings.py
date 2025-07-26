@@ -53,14 +53,14 @@ def make_index_model(coating):
     assert coating in supported_coatings, f"Coating {coating} not supported"
 
     # Skips first two rows because it returns a nan. Suspect this has to do
-    # with the csv file saving via excel. 
+    # with the csv file saving via excel.
     # NOTE: The first values in each of these files are ERRONEOUS, I put them
     # there so that the data could be skipped by this line and we get out of
     # the NaN value.
     if coating in ['MgF2', "F3", "Al2O3", 'SiO2', "Cr"]:
         coating_data = np.genfromtxt(COATINGS_PATH / f'{coating}.csv',
                                      delimiter=',', skip_header=1)
-    else:    
+    else:
         coating_data = np.genfromtxt(COATINGS_PATH / f'{coating}.csv',
                                      delimiter=',')
 
@@ -123,8 +123,7 @@ def load_coating_data(name, wavelengths):
         coating_stack.append((eval_index, thickness))
 
     # append the mirror substrate
-    glass = np.full_like(wavelengths, n_BK7)
+    glass = np.ones_like(wavelengths) * n_BK7
     coating_stack.append((glass))
 
     return coating_stack
-
