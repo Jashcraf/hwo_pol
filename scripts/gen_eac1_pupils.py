@@ -11,10 +11,11 @@ import ipdb
 
 N_LAMS = 5
 N_RAYS = 32
+
 # center_wavelengths = [250, 550, 760, 950, 1500]
-center_wavelengths = [1500]
+center_wavelengths = [250]
 # bandwidths = [0.1, 0.2, 0.2, 0.2]
-bandwidths = [0.2]
+bandwidths = [0.1]
 FOV = -0.07302
 JONES_DIR = Path.home() / "Box/Polarization PSDD/Jones Pupils/EAC1/"
 
