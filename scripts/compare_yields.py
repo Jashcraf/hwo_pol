@@ -8,7 +8,12 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import ipdb
 
-COMPARISON_PTH = "EAC1_XeLiF_550nm_8m"
+# Update plotting
+plt.rcParams["mathtext.default"] = "regular"
+plt.rcParams["text.usetex"] = True 
+
+COMPARISON_PTH = "EAC1_XeLiF_550nm_8m_Enforce_Narrowband"
+title = "EAC1_XeLiF_550nm_8m"
 
 YIELDS_DIR = Path.home() / "FRIDAY_Outputs"
 YIELD1_DIR = YIELDS_DIR / "EAC1_XeLiF_550nm_16m_Scalar"
@@ -24,8 +29,8 @@ targets_1 = pd.read_csv(YIELD1_DIR / "target_list.csv", delimiter=",")
 targets_2 = pd.read_csv(YIELD2_DIR / "target_list.csv", delimiter=",")
 
 key = "exoEarth candidate yield"
-key = "Exp Time (days)"
-key = "Spec char time (days)"
+# key = "Exp Time (days)"
+# key = "Spec char time (days)"
 
 ayo_keys = [
     "exoEarth candidate yield",
@@ -42,7 +47,7 @@ elif key == "Spec char time (days)":
     vlim = 2
 elif key == "exoEarth candidate yield":
     cbar_label = r"$\Delta$ HZ Completeness"
-    vlim = 0.15
+    vlim = 0.05
 
 # Dictionaries keyed by StarID
 data_1 = {}
@@ -134,7 +139,9 @@ plt.xlim([0, 25])
 plt.ylim([1e-2, 30])
 plt.yscale("log")
 pct_diff = (1 - (yield_2 / yield_1)) * 100
-plt.title(COMPARISON_PTH+f"       Yield = {yield_2:.2f} (-{pct_diff:.2f}%)")
+plt.title(title)#+f"       Yield = {yield_2:.2f} (-{pct_diff:.2f}%)")
+plt.text(15, 1e-1, f"Yield = {yield_2:.2f}", color="black", fontsize=14)
+plt.text(15, 6e-2, f" (-{pct_diff:.2f}\%)", fontweight="bold", color="red", fontsize=14)
 plt.scatter(0, -1, color="k", marker="x", label=f"{targs_missed} Missed Targets")
 plt.scatter(0, -1, edgecolor="r", facecolor="None", marker="o", label=f"{new_targs} Additional Targets")
 plt.legend(loc="lower right")
