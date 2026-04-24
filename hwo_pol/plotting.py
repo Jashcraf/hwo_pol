@@ -26,7 +26,7 @@ def plot_jones_3x3(jones, type='polar', vmin1=None, vmax1=None, vmin2=None, vmax
     jones = np.reshape(jones, (3, 3, jones_shape, jones_shape))
 
 
-    fig, axs = plt.subplots(ncols=6, nrows=3, figsize=(14, 6))
+    fig, axs = plt.subplots(ncols=6, nrows=3, figsize=(16, 6))
 
     if title is not None:
         plt.suptitle(title)
